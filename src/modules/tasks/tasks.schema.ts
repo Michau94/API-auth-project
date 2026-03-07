@@ -1,5 +1,3 @@
-import { TaskStatus } from "./tasks.store";
-
 export const taskStatusEnum = ["TODO", "IN_PROGRESS", "DONE"] as const;
 export const taskPriorityEnum = ["LOW", "MEDIUM", "HIGH"] as const;
 

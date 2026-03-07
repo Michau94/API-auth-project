@@ -10,4 +10,15 @@ export type Task = {
   createdAt: string;
 };
 
-export const tasks: Task[] = [];
+export type CreateTaskBody = {
+  title: string;
+  description: string;
+  status?: "TODO" | "IN_PROGRESS" | "DONE";
+  priority?: "LOW" | "MEDIUM" | "HIGH";
+};
+
+export type UpdateTaskBody = Partial<CreateTaskBody>;
+
+export type TaskParams = {
+  id: string;
+};

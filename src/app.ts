@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import { taskRoutes } from "./modules/tasks.routes";
+import { taskRoutes } from "./modules/tasks/tasks.routes";
 
 export default function buildApp() {
   const app = Fastify({ logger: true });

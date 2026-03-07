@@ -5,20 +5,14 @@ import {
   taskIdParamSchema,
 } from "./tasks.schema";
 
-import { tasks, Task } from "./tasks.store";
+import { tasks } from "./tasks.store";
 
-type CreateTaskBody = {
-  title: string;
-  description: string;
-  status?: "TODO" | "IN_PROGRESS" | "DONE";
-  priority?: "LOW" | "MEDIUM" | "HIGH";
-};
-
-type UpdateTaskBody = Partial<CreateTaskBody>;
-
-type TaskParams = {
-  id: string;
-};
+import {
+  CreateTaskBody,
+  Task,
+  TaskParams,
+  UpdateTaskBody,
+} from "./tasks.types";
 
 export async function taskRoutes(app: FastifyInstance) {
   // get TASK from store
