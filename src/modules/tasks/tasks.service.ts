@@ -1,8 +1,13 @@
+import { prisma } from "../../lib/prisma";
 import { tasks } from "./tasks.store";
 import { CreateTaskBody, Task, UpdateTaskBody } from "./tasks.types";
 
-export function getAllTasks() {
-  return tasks;
+export async function getAllTasks() {
+  return await prisma.task.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 }
 
 export function getTaskById(id: string) {

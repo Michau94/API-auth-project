@@ -8,10 +8,15 @@ import {
 } from "./tasks.service";
 import { CreateTaskBody, TaskParams, UpdateTaskBody } from "./tasks.types";
 
-export function getTasksHandler() {
-  const allTasks = getAllTasks();
+export async function getTasksHandler(
+  _request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const allTasks = await getAllTasks();
 
-  return { data: allTasks };
+  return reply.status(200).send({
+    allTasks,
+  });
 }
 
 export function getTaskByHandler(
