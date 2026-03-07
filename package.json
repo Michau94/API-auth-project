@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/server.js",
     "build": "tsc",
     "start": "node dist/server.js"
   },
@@ -13,10 +13,14 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "fastify": "^5.8.2"
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "fastify": "^5.8.2",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@types/node": "^25.3.5",
+    "prisma": "^7.4.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
