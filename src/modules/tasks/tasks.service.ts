@@ -10,23 +10,27 @@ export async function getAllTasks() {
   });
 }
 
-export function getTaskById(id: string) {
-  return tasks.find((task) => task.id === id) ?? null;
+export async function getTaskById(id: string) {
+  const task = await prisma.task.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return task;
 }
 
-export function createTask(input: CreateTaskBody): Task {
-  const newTask: Task = {
-    id: crypto.randomUUID(),
-    title: input.title,
-    description: input.description,
-    status: input.status ?? "TODO",
-    priority: input.priority ?? "MEDIUM",
-    createdAt: new Date().toISOString(),
-  };
+export async function createTask(input: CreateTaskBody) {
+  const task = await prisma.task.create({
+    data: {
+      title: input.title,
+      description: input.description,
+      status: input.status ?? "TODO",
+      priority: input.priority ?? "MEDIUM",
+    },
+  });
 
-  tasks.push(newTask);
-
-  return newTask;
+  return task;
 }
 
 export function updateById(id: string, updates: UpdateTaskBody) {

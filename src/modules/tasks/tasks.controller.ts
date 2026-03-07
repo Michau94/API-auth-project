@@ -12,20 +12,20 @@ export async function getTasksHandler(
   _request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const allTasks = await getAllTasks();
+  const tasks = await getAllTasks();
 
   return reply.status(200).send({
-    allTasks,
+    data: tasks,
   });
 }
 
-export function getTaskByHandler(
+export async function getTaskByHandler(
   request: FastifyRequest<{ Params: TaskParams }>,
   reply: FastifyReply,
 ) {
   const { id } = request.params;
 
-  const task = getTaskById(id);
+  const task = await getTaskById(id);
 
   if (!task) {
     return reply.status(404).send({
@@ -33,14 +33,16 @@ export function getTaskByHandler(
     });
   }
 
-  return { data: task };
+  return reply.status(200).send({
+    task,
+  });
 }
 
-export function createTaskHandler(
+export async function createTaskHandler(
   request: FastifyRequest<{ Body: CreateTaskBody }>,
   reply: FastifyReply,
 ) {
-  const newTask = createTask(request.body);
+  const newTask = await createTask(request.body);
 
   return reply.status(201).send({
     data: newTask,
