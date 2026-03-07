@@ -13,8 +13,8 @@ export type Task = {
 export type CreateTaskBody = {
   title: string;
   description: string;
-  status?: "TODO" | "IN_PROGRESS" | "DONE";
-  priority?: "LOW" | "MEDIUM" | "HIGH";
+  status?: TaskStatus;
+  priority?: TaskPriority;
 };
 
 export type UpdateTaskBody = Partial<CreateTaskBody>;
