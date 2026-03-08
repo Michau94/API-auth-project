@@ -49,12 +49,12 @@ export async function createTaskHandler(
   });
 }
 
-export function updateTaskHandler(
+export async function updateTaskHandler(
   request: FastifyRequest<{ Body: UpdateTaskBody; Params: TaskParams }>,
   reply: FastifyReply,
 ) {
   const { id } = request.params;
-  const updatedTask = updateById(id, request.body);
+  const updatedTask = await updateById(id, request.body);
 
   if (!updatedTask) {
     return reply.status(404).send({

@@ -1,13 +1,15 @@
 import { prisma } from "../../lib/prisma";
 import { tasks } from "./tasks.store";
-import { CreateTaskBody, Task, UpdateTaskBody } from "./tasks.types";
+import { CreateTaskBody, UpdateTaskBody } from "./tasks.types";
 
 export async function getAllTasks() {
-  return await prisma.task.findMany({
+  const tasks = await prisma.task.findMany({
     orderBy: {
       createdAt: "desc",
     },
   });
+
+  return tasks;
 }
 
 export async function getTaskById(id: string) {
@@ -33,18 +35,26 @@ export async function createTask(input: CreateTaskBody) {
   return task;
 }
 
-export function updateById(id: string, updates: UpdateTaskBody) {
-  const taskIndex = tasks.findIndex((task) => task.id === id);
+export async function updateById(id: string, updates: UpdateTaskBody) {
+  const task = await prisma.task.findUnique({
+    where: { id },
+  });
 
-  if (taskIndex === -1) {
+  if (!task) {
     return null;
   }
-  const updatedTask: Task = {
-    ...tasks[taskIndex],
-    ...updates,
-  };
 
-  tasks[taskIndex] = updatedTask;
+  const updatedTask = await prisma.task.update({
+    where: { id },
+    data: {
+      ...updates,
+    },
+  });
+
+  // const updatedTask: Task = {
+  //   ...tasks[taskIndex],
+  //   ...updates,
+  // };
 
   return updatedTask;
 }
