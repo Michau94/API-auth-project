@@ -51,22 +51,23 @@ export async function updateById(id: string, updates: UpdateTaskBody) {
     },
   });
 
-  // const updatedTask: Task = {
-  //   ...tasks[taskIndex],
-  //   ...updates,
-  // };
-
   return updatedTask;
 }
 
-export function deleteTaskById(id: string) {
-  const taskIndex = tasks.findIndex((task) => task.id === id);
+export async function deleteTaskById(id: string) {
+  const task = prisma.task.findUnique({
+    where: { id },
+  });
 
-  if (taskIndex === -1) {
+  if (!task) {
     return false;
   }
 
-  tasks.splice(taskIndex, 1);
+  await prisma.task.delete({
+    where: {
+      id,
+    },
+  });
 
   return true;
 }

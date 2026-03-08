@@ -73,7 +73,7 @@ export async function deleteTaskHandler(
 ) {
   const { id } = request.params;
 
-  const deleted = deleteTaskById(id);
+  const deleted = await deleteTaskById(id);
 
   if (!deleted) {
     return reply.status(404).send({
