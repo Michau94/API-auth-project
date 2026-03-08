@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createUserInput } from "./auth.types";
-import { registerUser } from "./auth.service";
+import { createUserInput, loginUserInput } from "./auth.types";
+import { loginUser, registerUser } from "./auth.service";
 
 export async function registerUserHandler(
   request: FastifyRequest<{ Body: createUserInput }>,
@@ -21,7 +21,27 @@ export async function registerUserHandler(
   });
 }
 
-export function loginUserHandler(
-  request: FastifyRequest,
+export async function loginUserHandler(
+  request: FastifyRequest<{ Body: loginUserInput }>,
   reply: FastifyReply,
-) {}
+) {
+  const user = await loginUser(request.body);
+
+  if (!user) {
+    return reply.status(400).send({
+      message: "Invalid Credentials",
+    });
+  }
+
+  const accessToken = await reply.jwtSign({
+    sub: user.id,
+    email: user.email,
+  });
+
+  return reply.status(200).send({
+    data: {
+      accessToken,
+      user,
+    },
+  });
+}
