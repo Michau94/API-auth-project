@@ -10,26 +10,15 @@ export const createUserSchema = {
     },
   },
   response: {
-    200: {
-      type: ["object"],
-      additionalProperties: false,
-      required: ["accessToken", "user"],
+    201: {
+      type: "object",
       properties: {
-        accessToek: { type: "string" },
-        user: {
-          type: "object",
-          addotionalProperties: false,
-          properties: {
-            id: { type: "string" },
-            name: { type: "string" },
-            email: { type: "string" },
-          },
-        },
+        email: { type: "string" },
+        name: { type: "string" },
       },
     },
-    400: {
-      type: ["object"],
-      required: ["message"],
+    409: {
+      type: "object",
       properties: {
         message: { type: "string" },
       },
@@ -48,16 +37,26 @@ export const loginUserSchema = {
     },
   },
   response: {
-    201: {
-      type: ["object"],
+    200: {
+      type: "object",
+      additionalProperties: false,
+      required: ["accessToken", "user"],
       properties: {
-        email: { type: "string" },
-        name: { type: "string" },
         accessToken: { type: "string" },
+        user: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            id: { type: "string" },
+            name: { type: "string" },
+            email: { type: "string" },
+          },
+        },
       },
     },
-    409: {
-      type: ["object"],
+    400: {
+      type: "object",
+      required: ["message"],
       properties: {
         message: { type: "string" },
       },
