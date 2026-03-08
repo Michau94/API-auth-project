@@ -9,6 +9,32 @@ export const createUserSchema = {
       password: { type: "string", minLength: 8 },
     },
   },
+  response: {
+    200: {
+      type: ["object"],
+      additionalProperties: false,
+      required: ["accessToken", "user"],
+      properties: {
+        accessToek: { type: "string" },
+        user: {
+          type: "object",
+          addotionalProperties: false,
+          properties: {
+            id: { type: "string" },
+            name: { type: "string" },
+            email: { type: "string" },
+          },
+        },
+      },
+    },
+    400: {
+      type: ["object"],
+      required: ["message"],
+      properties: {
+        message: { type: "string" },
+      },
+    },
+  },
 };
 
 export const loginUserSchema = {
@@ -18,7 +44,23 @@ export const loginUserSchema = {
     additionalProperties: false,
     properties: {
       email: { type: "string", format: "email" },
-      passwordHash: { type: "string", minLength: 8 },
+      password: { type: "string", minLength: 8 },
+    },
+  },
+  response: {
+    201: {
+      type: ["object"],
+      properties: {
+        email: { type: "string" },
+        name: { type: "string" },
+        accessToken: { type: "string" },
+      },
+    },
+    409: {
+      type: ["object"],
+      properties: {
+        message: { type: "string" },
+      },
     },
   },
 };
