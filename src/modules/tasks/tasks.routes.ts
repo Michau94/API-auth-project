@@ -16,7 +16,7 @@ import {
 
 export async function taskRoutes(app: FastifyInstance) {
   // get TASK from store
-  app.get("/tasks", getTasksHandler);
+  app.get("/tasks", { onRequest: [app.authenticate] }, getTasksHandler);
 
   app.post<{ Body: CreateTaskBody }>(
     "/tasks",
