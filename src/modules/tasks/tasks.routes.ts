@@ -5,14 +5,7 @@ import {
   taskIdParamSchema,
 } from "./tasks.schema";
 
-import { tasks } from "./tasks.store";
-
-import {
-  CreateTaskBody,
-  Task,
-  TaskParams,
-  UpdateTaskBody,
-} from "./tasks.types";
+import { CreateTaskBody, TaskParams, UpdateTaskBody } from "./tasks.types";
 import {
   createTaskHandler,
   deleteTaskHandler,
