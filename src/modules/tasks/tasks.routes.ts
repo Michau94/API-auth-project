@@ -25,16 +25,16 @@ export async function taskRoutes(app: FastifyInstance) {
   // get TASK from store
   app.get("/tasks", getTasksHandler);
 
-  app.get<{ Params: TaskParams }>(
-    "/tasks/:id",
-    { schema: taskIdParamSchema },
-    getTaskByHandler,
-  );
-
   app.post<{ Body: CreateTaskBody }>(
     "/tasks",
     { schema: createTaskSchema },
     createTaskHandler,
+  );
+
+  app.get<{ Params: TaskParams }>(
+    "/tasks/:id",
+    { schema: taskIdParamSchema },
+    getTaskByHandler,
   );
 
   app.patch<{ Params: TaskParams; Body: UpdateTaskBody }>(
