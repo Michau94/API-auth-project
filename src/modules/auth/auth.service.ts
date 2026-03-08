@@ -15,13 +15,13 @@ export async function loginUser(userData: loginUserInput) {
   });
 
   if (!user) {
-    return false;
+    return null;
   }
 
-  const isValid = argon2.verify(user.passwordHash, password);
+  const isValid = await argon2.verify(user.passwordHash, password);
 
   if (!isValid) {
-    throw new Error("Invalid Credentials");
+    return null;
   }
 
   // TO ADD access token on login

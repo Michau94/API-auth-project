@@ -16,9 +16,7 @@ export async function registerUserHandler(
     });
   }
 
-  return reply.status(201).send({
-    user: register,
-  });
+  return reply.status(201).send(register);
 }
 
 export async function loginUserHandler(
@@ -39,9 +37,7 @@ export async function loginUserHandler(
   });
 
   return reply.status(200).send({
-    data: {
-      accessToken,
-      user,
-    },
+    accessToken,
+    user,
   });
 }
