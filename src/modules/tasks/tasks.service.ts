@@ -1,9 +1,17 @@
 import { prisma } from "../../lib/prisma";
-import { tasks } from "./tasks.store";
 import { CreateTaskBody, UpdateTaskBody } from "./tasks.types";
 
-export async function getAllTasks() {
+export async function getAllTasks(userId: string) {
   const tasks = await prisma.task.findMany({
+    where: { userId },
+    select: {
+      title: true,
+      description: true,
+      createdAt: true,
+      status: true,
+      priority: true,
+    },
+
     orderBy: {
       createdAt: "desc",
     },
@@ -12,32 +20,38 @@ export async function getAllTasks() {
   return tasks;
 }
 
-export async function getTaskById(id: string) {
+export async function getTaskById(id: string, userId: string) {
   const task = await prisma.task.findUnique({
     where: {
       id,
+      userId,
     },
   });
 
   return task;
 }
 
-export async function createTask(input: CreateTaskBody) {
+export async function createTask(input: CreateTaskBody, userId: string) {
   const task = await prisma.task.create({
     data: {
       title: input.title,
       description: input.description,
       status: input.status ?? "TODO",
       priority: input.priority ?? "MEDIUM",
+      userId,
     },
   });
 
   return task;
 }
 
-export async function updateById(id: string, updates: UpdateTaskBody) {
+export async function updateById(
+  id: string,
+  updates: UpdateTaskBody,
+  userId: string,
+) {
   const task = await prisma.task.findUnique({
-    where: { id },
+    where: { id, userId },
   });
 
   if (!task) {
@@ -54,9 +68,9 @@ export async function updateById(id: string, updates: UpdateTaskBody) {
   return updatedTask;
 }
 
-export async function deleteTaskById(id: string) {
+export async function deleteTaskById(id: string, userId: string) {
   const task = await prisma.task.findUnique({
-    where: { id },
+    where: { id, userId },
   });
 
   if (!task) {

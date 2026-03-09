@@ -20,25 +20,25 @@ export async function taskRoutes(app: FastifyInstance) {
 
   app.post<{ Body: CreateTaskBody }>(
     "/tasks",
-    { schema: createTaskSchema },
+    {onRequest: [app.authenticate] , schema: createTaskSchema },
     createTaskHandler,
   );
 
   app.get<{ Params: TaskParams }>(
     "/tasks/:id",
-    { schema: taskIdParamSchema },
+    { onRequest: [app.authenticate] ,schema: taskIdParamSchema },
     getTaskByHandler,
   );
 
   app.patch<{ Params: TaskParams; Body: UpdateTaskBody }>(
     "/tasks/:id",
-    { schema: updateTaskSchema },
+    {onRequest: [app.authenticate] , schema: updateTaskSchema },
     updateTaskHandler,
   );
 
   app.delete<{ Params: TaskParams }>(
     "/tasks/:id",
-    { schema: taskIdParamSchema },
+    {onRequest: [app.authenticate] , schema: taskIdParamSchema },
     deleteTaskHandler,
   );
 }

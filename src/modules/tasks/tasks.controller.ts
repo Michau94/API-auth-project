@@ -9,10 +9,10 @@ import {
 import { CreateTaskBody, TaskParams, UpdateTaskBody } from "./tasks.types";
 
 export async function getTasksHandler(
-  _request: FastifyRequest,
+  request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const tasks = await getAllTasks();
+  const tasks = await getAllTasks(request.user.id);
 
   return reply.status(200).send({
     data: tasks,
@@ -24,8 +24,9 @@ export async function getTaskByHandler(
   reply: FastifyReply,
 ) {
   const { id } = request.params;
+  const userId = request.user.id;
 
-  const task = await getTaskById(id);
+  const task = await getTaskById(id, userId);
 
   if (!task) {
     return reply.status(404).send({
@@ -42,7 +43,7 @@ export async function createTaskHandler(
   request: FastifyRequest<{ Body: CreateTaskBody }>,
   reply: FastifyReply,
 ) {
-  const newTask = await createTask(request.body);
+  const newTask = await createTask(request.body, request.user.id);
 
   return reply.status(201).send({
     data: newTask,
@@ -54,7 +55,8 @@ export async function updateTaskHandler(
   reply: FastifyReply,
 ) {
   const { id } = request.params;
-  const updatedTask = await updateById(id, request.body);
+
+  const updatedTask = await updateById(id, request.body, request.user.id);
 
   if (!updatedTask) {
     return reply.status(404).send({
@@ -73,7 +75,7 @@ export async function deleteTaskHandler(
 ) {
   const { id } = request.params;
 
-  const deleted = await deleteTaskById(id);
+  const deleted = await deleteTaskById(id, request.user.id);
 
   if (!deleted) {
     return reply.status(404).send({

@@ -29,13 +29,14 @@ export const updateTaskSchema = {
   params: {
     type: "object",
     required: ["id"],
-  },
-  properties: {
-    id: { type: "string", minLength: 1 },
+    properties: {
+      id: { type: "string", minLength: 1 },
+    },
   },
   body: {
     type: "object",
     additionalProperties: false,
+    minProperties: 1,
     properties: {
       title: { type: "string", minLength: 1 },
       description: { type: "string" },
