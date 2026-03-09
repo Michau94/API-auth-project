@@ -13,6 +13,34 @@ export const createTaskSchema = {
       priority: { type: "string", enum: taskPriorityEnum },
     },
   },
+  response: {
+    201: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        data: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            title: { type: "string" },
+            description: { type: "string" },
+            status: { type: "string" },
+            priority: { type: "string" },
+            createdAt: { type: "string" },
+            updatedAt: { type: "string" },
+            userId: { type: "string" },
+          },
+        },
+      },
+    },
+    401: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        message: { type: "string" },
+      },
+    },
+  },
 };
 
 export const taskIdParamSchema = {
@@ -42,6 +70,27 @@ export const updateTaskSchema = {
       description: { type: "string" },
       status: { type: "string", enum: [...taskStatusEnum] },
       priority: { type: "string", enum: [...taskPriorityEnum] },
+    },
+  },
+  response: {
+    200: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        data: {
+          type: "object",
+          properties: {
+            id: { type: "string" },
+            title: { type: "string" },
+            description: { type: "string" },
+            status: { type: "string" },
+            priority: { type: "string" },
+            createdAt: { type: "string" },
+            updatedAt: { type: "string" },
+            userId: { type: "string" },
+          },
+        },
+      },
     },
   },
 };
