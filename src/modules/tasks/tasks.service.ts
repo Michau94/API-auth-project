@@ -5,6 +5,7 @@ export async function getAllTasks(userId: string) {
   const tasks = await prisma.task.findMany({
     where: { userId },
     select: {
+      id: true,
       title: true,
       description: true,
       createdAt: true,

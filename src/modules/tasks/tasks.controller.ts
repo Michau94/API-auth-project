@@ -35,7 +35,7 @@ export async function getTaskByHandler(
   }
 
   return reply.status(200).send({
-    task,
+    data: task,
   });
 }
 
@@ -64,7 +64,7 @@ export async function updateTaskHandler(
     });
   }
 
-  return reply.status(201).send({
+  return reply.status(200).send({
     data: updatedTask,
   });
 }
