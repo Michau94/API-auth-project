@@ -8,6 +8,7 @@ export type Task = {
   status: TaskStatus;
   priority: TaskPriority;
   createdAt: string;
+  userId: string;
 };
 
 export type CreateTaskBody = {

@@ -22,7 +22,7 @@ export async function getAllTasks(userId: string) {
 }
 
 export async function getTaskById(id: string, userId: string) {
-  const task = await prisma.task.findUnique({
+  const task = await prisma.task.findFirst({
     where: {
       id,
       userId,
@@ -51,38 +51,41 @@ export async function updateById(
   updates: UpdateTaskBody,
   userId: string,
 ) {
-  const task = await prisma.task.findUnique({
-    where: { id, userId },
+  const updatedTask = await prisma.$transaction(async (tx) => {
+    const result = await tx.task.updateMany({
+      where: { id, userId },
+      data: {
+        ...updates,
+      },
+    });
+
+    if (result.count === 0) {
+      return null;
+    }
+
+    return tx.task.findFirst({
+      where: { id, userId },
+    });
   });
 
-  if (!task) {
+  if (!updatedTask) {
     return null;
   }
-
-  const updatedTask = await prisma.task.update({
-    where: { id },
-    data: {
-      ...updates,
-    },
-  });
 
   return updatedTask;
 }
 
 export async function deleteTaskById(id: string, userId: string) {
-  const task = await prisma.task.findUnique({
-    where: { id, userId },
-  });
-
-  if (!task) {
-    return false;
-  }
-
-  await prisma.task.delete({
+  const deletedTask = await prisma.task.deleteMany({
     where: {
       id,
+      userId,
     },
   });
+
+  if (deletedTask.count === 0) {
+    return false;
+  }
 
   return true;
 }
