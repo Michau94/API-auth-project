@@ -55,7 +55,7 @@ export async function updateById(id: string, updates: UpdateTaskBody) {
 }
 
 export async function deleteTaskById(id: string) {
-  const task = prisma.task.findUnique({
+  const task = await prisma.task.findUnique({
     where: { id },
   });
 
