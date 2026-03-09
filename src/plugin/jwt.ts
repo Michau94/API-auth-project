@@ -8,12 +8,20 @@ export default fp(async function jwtPlugin(app: FastifyInstance) {
     sign: {
       expiresIn: "15m",
     },
+    formatUser: (payload) => ({
+      id: payload.sub,
+      email: payload.email,
+    }),
   });
 
   app.decorate(
     "authenticate",
     async function (request: FastifyRequest, reply: FastifyReply) {
-      await request.jwtVerify();
+      try {
+        await request.jwtVerify();
+      } catch (e) {
+        return reply.status(401).send({ message: "Unauthorized" });
+      }
     },
   );
 });
