@@ -12,7 +12,7 @@ export async function registerUserHandler(
 
   if (!register) {
     return reply.status(409).send({
-      message: "user already exist",
+      message: "User Already Exist",
     });
   }
 
@@ -28,6 +28,7 @@ export async function loginUserHandler(
   if (!user) {
     return reply.status(400).send({
       message: "Invalid Credentials",
+      error: 400,
     });
   }
 
