@@ -43,15 +43,6 @@ export const loginUserSchema = {
       required: ["accessToken", "user"],
       properties: {
         accessToken: { type: "string" },
-        user: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            id: { type: "string" },
-            name: { type: "string" },
-            email: { type: "string" },
-          },
-        },
       },
     },
     401: {

@@ -39,6 +39,5 @@ export async function loginUserHandler(
 
   return reply.status(200).send({
     accessToken,
-    user,
   });
 }
