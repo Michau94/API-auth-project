@@ -31,7 +31,7 @@ export async function loginUser(userData: loginUserInput) {
   const refreshToken = randomBytes(64).toString("hex");
 
   // hashing refresh token
-  const refreshHash = createHash("sha256").update(refreshToken).digest("hex");
+  const refreshHash = await argon2.hash(password, { type: argon2id });
 
   await prisma.session.create({
     data: {
@@ -76,3 +76,7 @@ export async function registerUser(userData: createUserInput) {
 
   return newUser;
 }
+
+export async function refreshToken() {}
+
+export async function revokeToken() {}
