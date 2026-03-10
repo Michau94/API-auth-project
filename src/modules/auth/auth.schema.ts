@@ -40,18 +40,9 @@ export const loginUserSchema = {
     200: {
       type: "object",
       additionalProperties: false,
-      required: ["accessToken", "user"],
+      required: ["accessToken"],
       properties: {
         accessToken: { type: "string" },
-        user: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            id: { type: "string" },
-            name: { type: "string" },
-            email: { type: "string" },
-          },
-        },
       },
     },
     401: {

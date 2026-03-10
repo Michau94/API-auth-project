@@ -101,13 +101,7 @@ export async function refreshToken(token: string) {
     throw err;
   }
 
-  if (!session.user) {
-    const err = new Error("UNAUTHORIZED");
-    (err as any).statusCode = 401;
-    throw err;
-  }
-
-  if (session.usedAt !== null) {
+  if (session.user && session.usedAt !== null) {
     await prisma.session.deleteMany({ where: { userId: session.user.id } });
     const err = new Error("UNAUTHORIZED");
     (err as any).statusCode = 401;
@@ -132,7 +126,7 @@ export async function refreshToken(token: string) {
   await prisma.session.create({
     data: {
       refreshTokenHash: newHash,
-      userId: session.user.id,
+      userId: session.user!.id,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
   });

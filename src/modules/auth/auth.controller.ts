@@ -11,48 +11,49 @@ export async function registerUserHandler(
   request: FastifyRequest<{ Body: createUserInput }>,
   reply: FastifyReply,
 ) {
-  const newUserData = request.body;
+  try {
+    const newUserData = request.body;
+    const register = await registerUser(newUserData);
 
-  const register = await registerUser(newUserData);
-
-  if (!register) {
-    return reply.status(409).send({
-      message: "User Already Exist",
-    });
+    return reply.status(201).send(register);
+  } catch (e: any) {
+    if (e.statusCode === 409) {
+      return reply.status(409).send({
+        message: "Email already in use",
+      });
+    }
+    throw e;
   }
-
-  return reply.status(201).send(register);
 }
 
 export async function loginUserHandler(
   request: FastifyRequest<{ Body: loginUserInput }>,
   reply: FastifyReply,
 ) {
-  const { user, refreshToken } = await loginUser(request.body);
+  try {
+    const { user, refreshToken } = await loginUser(request.body);
 
-  if (!user) {
-    return reply.status(401).send({
-      message: "Invalid Credentials",
-      error: 401,
+    const accessToken = await reply.jwtSign({
+      sub: user.id,
+      email: user.email,
     });
+
+    reply.setCookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    });
+
+    return reply.status(200).send({
+      accessToken,
+    });
+  } catch (e: any) {
+    if (e.statusCode === 401) {
+      return reply.status(401).send({ message: "Invalid credentials" });
+    }
+    throw e;
   }
-
-  const accessToken = await reply.jwtSign({
-    sub: user.id,
-    email: user.email,
-  });
-
-  reply.setCookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-  });
-
-  return reply.status(200).send({
-    accessToken,
-    user,
-  });
 }
 
 export async function refreshTokenHandler(
@@ -67,8 +68,8 @@ export async function refreshTokenHandler(
     const { user, newToken } = await refreshToken(token);
 
     const accessToken = await reply.jwtSign({
-      sub: user.id,
-      email: user.email,
+      sub: user!.id,
+      email: user!.email,
     });
 
     reply.setCookie("refreshToken", newToken, {
