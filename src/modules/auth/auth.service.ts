@@ -21,10 +21,11 @@ export async function loginUser(userData: loginUserInput) {
   const isValid = await argon2.verify(user.passwordHash, password);
 
   if (!isValid) {
-    return null;
+    const err = new Error("INVALID_CREDENTIALS");
+    (err as any).statusCode = 401;
+    throw err;
   }
 
-  // TO ADD access token on login
   const { passwordHash, ...safeUser } = user;
   return safeUser;
 }

@@ -26,9 +26,9 @@ export async function loginUserHandler(
   const user = await loginUser(request.body);
 
   if (!user) {
-    return reply.status(400).send({
+    return reply.status(401).send({
       message: "Invalid Credentials",
-      error: 400,
+      error: 401,
     });
   }
 
