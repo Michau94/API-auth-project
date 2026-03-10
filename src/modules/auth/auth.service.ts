@@ -41,7 +41,9 @@ export async function registerUser(userData: createUserInput) {
   const userExist = await prisma.user.findUnique({ where: { email } });
 
   if (userExist) {
-    return null;
+    const err = new Error("EMAIL_ALREADY_IN_USE");
+    (err as any).statusCode = 409;
+    throw err;
   }
 
   const passwordHash = await argon2.hash(password, { type: argon2id });
