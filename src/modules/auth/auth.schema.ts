@@ -54,7 +54,7 @@ export const loginUserSchema = {
         },
       },
     },
-    400: {
+    401: {
       type: "object",
       required: ["message"],
       properties: {
