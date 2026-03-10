@@ -3,8 +3,12 @@ import jwt from "@fastify/jwt";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 export default fp(async function jwtPlugin(app: FastifyInstance) {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error("Missing JWT_SECRET env variable");
+
   app.register(jwt, {
-    secret: process.env.JWT_SECRET as string,
+    secret,
+
     sign: {
       expiresIn: "15m",
     },
