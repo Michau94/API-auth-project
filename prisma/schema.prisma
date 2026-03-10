@@ -65,8 +65,7 @@ model Session {
 
   createdAt DateTime  @default(now())
   expiresAt DateTime
-  updatedAt DateTime  @updatedAt
-  revokedAt DateTime?
+  usedAt    DateTime?
 
   @@index([userId])
   @@index([expiresAt])
