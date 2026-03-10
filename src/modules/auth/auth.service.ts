@@ -140,4 +140,15 @@ export async function refreshToken(token: string) {
   return { user: session.user, newToken };
 }
 
-export async function revokeToken() {}
+export async function revokeToken(token: string) {
+  const tokenHash = createHash("sha256").update("token").digest("hex");
+
+  await prisma.session.updateMany({
+    where: {
+      refreshTokenHash: tokenHash,
+    },
+    data: {
+      usedAt: new Date(),
+    },
+  });
+}

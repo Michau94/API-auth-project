@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import {
   loginUserHandler,
+  logoutHandler,
   refreshTokenHandler,
   registerUserHandler,
 } from "./auth.controller";
@@ -12,4 +13,6 @@ export default function authRoutes(app: FastifyInstance) {
   app.post("/auth/register", { schema: createUserSchema }, registerUserHandler);
 
   app.post("/auth/refresh", refreshTokenHandler);
+
+  app.post("/auth/logout", { onRequest: [app.authenticate] }, logoutHandler);
 }

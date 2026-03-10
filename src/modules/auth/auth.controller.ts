@@ -1,6 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createUserInput, loginUserInput } from "./auth.types";
-import { loginUser, refreshToken, registerUser } from "./auth.service";
+import {
+  loginUser,
+  refreshToken,
+  registerUser,
+  revokeToken,
+} from "./auth.service";
 
 export async function registerUserHandler(
   request: FastifyRequest<{ Body: createUserInput }>,
@@ -77,4 +82,19 @@ export async function refreshTokenHandler(
   } catch {
     return reply.status(401).send({ message: "Unauthorized" });
   }
+}
+
+export async function logoutHandler(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const token = request.cookies.refreshToken;
+
+  if (token) {
+    await revokeToken(token);
+  }
+
+  reply.clearCookie("refreshToken", { path: "/" });
+
+  return reply.status(200).send();
 }
