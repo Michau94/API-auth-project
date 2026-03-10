@@ -1,6 +1,7 @@
 import argon2, { argon2id } from "argon2";
 import { prisma } from "../../lib/prisma";
 import { createUserInput, loginUserInput } from "./auth.types";
+import { createHash, randomBytes } from "crypto";
 
 export async function loginUser(userData: loginUserInput) {
   const { email, password } = userData;
@@ -26,6 +27,19 @@ export async function loginUser(userData: loginUserInput) {
     (err as any).statusCode = 401;
     throw err;
   }
+
+  const refreshToken = randomBytes(64).toString("hex");
+
+  // hashing refresh token
+  const refreshHash = createHash("sha256").update(refreshToken).digest("hex");
+
+  await prisma.session.create({
+    data: {
+      refreshTokenHash: refreshHash,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      userId: user.id,
+    },
+  });
 
   const { passwordHash, ...safeUser } = user;
   return safeUser;
