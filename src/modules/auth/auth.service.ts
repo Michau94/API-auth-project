@@ -11,11 +11,12 @@ export async function loginUser(userData: loginUserInput) {
 
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, name: true, email: true, passwordHash: true },
   });
 
   if (!user) {
-    return null;
+    const err = new Error("INVALID_CREDENTIALS");
+    (err as any).statusCode = 401;
+    throw err;
   }
 
   const isValid = await argon2.verify(user.passwordHash, password);
