@@ -141,7 +141,7 @@ export async function refreshToken(token: string) {
 }
 
 export async function revokeToken(token: string) {
-  const tokenHash = createHash("sha256").update("token").digest("hex");
+  const tokenHash = createHash("sha256").update(token).digest("hex");
 
   await prisma.session.updateMany({
     where: {
