@@ -16,6 +16,11 @@ enum TaskPriority {
   HIGH
 }
 
+enum Role {
+  ADMIN
+  MEMBER
+}
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -23,37 +28,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-}
-
-model User {
-  id           String    @id @default(uuid())
-  name         String
-  email        String    @unique
-  passwordHash String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  tasks        Task[]
-  sessions     Session[]
-
-  @@map("users")
-}
-
-model Task {
-  id          String       @id @default(uuid())
-  title       String
-  description String?
-  status      TaskStatus?  @default(TODO)
-  priority    TaskPriority @default(MEDIUM)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-
-  @@index([userId])
-  @@index([userId, status])
-  @@index([userId, priority])
-  @@map("tasks")
 }
 
 model Session {
@@ -70,4 +44,64 @@ model Session {
   @@index([userId])
   @@index([expiresAt])
   @@map("sessions")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions      Session[]
+  ownedProjects Project[]       @relation("OwnedProjects")
+  memberships   ProjectMember[]
+  assignedTasks Task[]          @relation("AssignedTasks")
+
+  @@map("users")
+}
+
+model Project {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  ownerId     String
+  owner       User            @relation("OwnedProjects", fields: [ownerId], references: [id], onDelete: Restrict)
+  createdAt   DateTime        @default(now())
+  members     ProjectMember[]
+  tasks       Task[]
+}
+
+model ProjectMember {
+  userId    String
+  projectId String
+  role      Role     @default(MEMBER)
+  joinedAt  DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@id([userId, projectId])
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus?  @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  projectId  String
+  assigneeId String?
+
+  assignee User?   @relation("AssignedTasks", fields: [assigneeId], references: [id], onDelete: SetNull)
+  project  Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@index([projectId, status])
+  @@index([projectId, priority])
+  @@map("tasks")
 }
