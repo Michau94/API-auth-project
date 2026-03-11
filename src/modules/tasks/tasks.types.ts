@@ -18,11 +18,11 @@ export type CreateTaskBody = {
   description: string;
   status?: TaskStatus;
   priority?: TaskPriority;
-  projectId: string;
 };
 
 export type UpdateTaskBody = Partial<CreateTaskBody>;
 
 export type TaskParams = {
   id: string;
+  projectId: string;
 };
