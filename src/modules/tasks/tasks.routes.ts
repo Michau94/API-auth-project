@@ -17,32 +17,32 @@ import {
 } from "./tasks.controller";
 
 export async function taskRoutes(app: FastifyInstance) {
-  app.get(
-    "/tasks",
+  app.get<{ Params: { projectId: string } }>(
+    "/projects/:projectId/tasks",
     { onRequest: [app.authenticate], schema: getTasksSchema },
     getTasksHandler,
   );
 
-  app.post<{ Body: CreateTaskBody }>(
-    "/tasks",
+  app.post<{ Params: { projectId: string }; Body: CreateTaskBody }>(
+    "/projects/:projectId/tasks",
     { onRequest: [app.authenticate], schema: createTaskSchema },
     createTaskHandler,
   );
 
   app.get<{ Params: TaskParams }>(
-    "/tasks/:id",
+    "/projects/:projectId/tasks/:id",
     { onRequest: [app.authenticate], schema: getTaskByIdSchema },
     getTaskByHandler,
   );
 
   app.patch<{ Params: TaskParams; Body: UpdateTaskBody }>(
-    "/tasks/:id",
+    "/projects/:projectId/tasks/:id",
     { onRequest: [app.authenticate], schema: updateTaskSchema },
     updateTaskHandler,
   );
 
   app.delete<{ Params: TaskParams }>(
-    "/tasks/:id",
+    "/projects/:projectId/tasks/:id",
     { onRequest: [app.authenticate], schema: deleteTaskSchema },
     deleteTaskHandler,
   );
