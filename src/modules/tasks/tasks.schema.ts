@@ -43,7 +43,7 @@ const taskDetailSchema = {
     "updatedAt",
     "status",
     "priority",
-    "userId",
+    "projectId",
   ],
   properties: {
     id: { type: "string" },
@@ -53,7 +53,7 @@ const taskDetailSchema = {
     updatedAt: { type: "string" },
     status: { type: "string" },
     priority: { type: "string" },
-    userId: { type: "string" },
+    projectId: { type: "string" },
   },
 } as const;
 

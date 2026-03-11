@@ -1,9 +1,9 @@
 import { prisma } from "../../lib/prisma";
 import { CreateTaskBody, UpdateTaskBody } from "./tasks.types";
 
-export async function getAllTasks(userId: string) {
+export async function getAllTasks(projectId: string) {
   const tasks = await prisma.task.findMany({
-    where: { userId },
+    where: { projectId },
     select: {
       id: true,
       title: true,
@@ -21,25 +21,25 @@ export async function getAllTasks(userId: string) {
   return tasks;
 }
 
-export async function getTaskById(id: string, userId: string) {
+export async function getTaskById(id: string, projectId: string) {
   const task = await prisma.task.findFirst({
     where: {
       id,
-      userId,
+      projectId,
     },
   });
 
   return task;
 }
 
-export async function createTask(input: CreateTaskBody, userId: string) {
+export async function createTask(input: CreateTaskBody, projectId: string) {
   const task = await prisma.task.create({
     data: {
       title: input.title,
       description: input.description,
       status: input.status ?? "TODO",
       priority: input.priority ?? "MEDIUM",
-      userId,
+      projectId,
     },
   });
 
@@ -49,11 +49,11 @@ export async function createTask(input: CreateTaskBody, userId: string) {
 export async function updateById(
   id: string,
   updates: UpdateTaskBody,
-  userId: string,
+  projectId: string,
 ) {
   const updatedTask = await prisma.$transaction(async (tx) => {
     const result = await tx.task.updateMany({
-      where: { id, userId },
+      where: { id, projectId },
       data: {
         ...updates,
       },
@@ -64,7 +64,7 @@ export async function updateById(
     }
 
     return tx.task.findFirst({
-      where: { id, userId },
+      where: { id, projectId },
     });
   });
 
@@ -75,11 +75,11 @@ export async function updateById(
   return updatedTask;
 }
 
-export async function deleteTaskById(id: string, userId: string) {
+export async function deleteTaskById(id: string, projectId: string) {
   const deletedTask = await prisma.task.deleteMany({
     where: {
       id,
-      userId,
+      projectId,
     },
   });
 

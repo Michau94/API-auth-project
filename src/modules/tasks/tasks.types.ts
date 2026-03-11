@@ -8,7 +8,9 @@ export type Task = {
   status: TaskStatus;
   priority: TaskPriority;
   createdAt: string;
-  userId: string;
+  projectId: string;
+  updatedAt: string;
+  assigneeId?: string;
 };
 
 export type CreateTaskBody = {
@@ -16,6 +18,7 @@ export type CreateTaskBody = {
   description: string;
   status?: TaskStatus;
   priority?: TaskPriority;
+  projectId: string;
 };
 
 export type UpdateTaskBody = Partial<CreateTaskBody>;
