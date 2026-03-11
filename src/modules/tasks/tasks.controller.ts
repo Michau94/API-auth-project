@@ -9,10 +9,15 @@ import {
 import { CreateTaskBody, TaskParams, UpdateTaskBody } from "./tasks.types";
 
 export async function getTasksHandler(
-  request: FastifyRequest,
+  request: FastifyRequest<{
+    Params: { projectId: string };
+  }>,
   reply: FastifyReply,
 ) {
-  const tasks = await getAllTasks(request.user.id);
+  const userId = request.user.id;
+  const projectId = request.params.projectId;
+
+  const tasks = await getAllTasks(projectId, userId);
 
   return reply.status(200).send({
     data: tasks,
@@ -23,10 +28,10 @@ export async function getTaskByHandler(
   request: FastifyRequest<{ Params: TaskParams }>,
   reply: FastifyReply,
 ) {
-  const { id } = request.params;
+  const { id, projectId } = request.params;
   const userId = request.user.id;
 
-  const task = await getTaskById(id, userId);
+  const task = await getTaskById(id, projectId, userId);
 
   if (!task) {
     return reply.status(404).send({
@@ -40,10 +45,15 @@ export async function getTaskByHandler(
 }
 
 export async function createTaskHandler(
-  request: FastifyRequest<{ Body: CreateTaskBody }>,
+  request: FastifyRequest<{
+    Params: { projectId: string };
+    Body: CreateTaskBody;
+  }>,
   reply: FastifyReply,
 ) {
-  const newTask = await createTask(request.body, request.user.id);
+  const projectId = request.params.projectId;
+
+  const newTask = await createTask(request.body, projectId, request.user.id);
 
   return reply.status(201).send({
     data: newTask,
@@ -54,9 +64,14 @@ export async function updateTaskHandler(
   request: FastifyRequest<{ Body: UpdateTaskBody; Params: TaskParams }>,
   reply: FastifyReply,
 ) {
-  const { id } = request.params;
+  const { id, projectId } = request.params;
 
-  const updatedTask = await updateById(id, request.body, request.user.id);
+  const updatedTask = await updateById(
+    id,
+    request.body,
+    projectId,
+    request.user.id,
+  );
 
   if (!updatedTask) {
     return reply.status(404).send({
@@ -73,9 +88,9 @@ export async function deleteTaskHandler(
   request: FastifyRequest<{ Params: TaskParams }>,
   reply: FastifyReply,
 ) {
-  const { id } = request.params;
+  const { id, projectId } = request.params;
 
-  const deleted = await deleteTaskById(id, request.user.id);
+  const deleted = await deleteTaskById(id, projectId, request.user.id);
 
   if (!deleted) {
     return reply.status(404).send({
