@@ -3,8 +3,13 @@ import {
   createProject,
   getProjectById,
   listProjects,
+  updateProject,
 } from "./projects.service";
-import { CreateProjectBody, ProjectParams } from "./projects.types";
+import {
+  CreateProjectBody,
+  ProjectParams,
+  UpdateProjectBody,
+} from "./projects.types";
 
 export async function createProjectHandler(
   request: FastifyRequest<{ Body: CreateProjectBody }>,
@@ -64,7 +69,25 @@ export async function getProjectHandler(
   }
 }
 
-export async function updateProjectHandler() {}
+export async function updateProjectHandler(
+  request: FastifyRequest<{ Params: ProjectParams; Body: UpdateProjectBody }>,
+  reply: FastifyReply,
+) {
+  const userId = request.user.id;
+  const { id } = request.params;
+
+  try {
+    const project = await updateProject(id, userId, request.body);
+    return reply.status(201).send(project);
+  } catch (e: any) {
+    if (e.statusCode) {
+      return reply.status(e.statusCode).send({
+        message: e.message,
+      });
+    }
+    throw e;
+  }
+}
 
 export function deleteProjectHandler() {}
 
