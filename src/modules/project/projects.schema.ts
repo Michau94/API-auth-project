@@ -132,3 +132,12 @@ export const getProjectByIdSchema = {
     404: notFoundResponseSchema,
   },
 };
+
+export const deleteProjectSchema = {
+  response: {
+    204: {
+      type: null,
+    },
+    404: notFoundResponseSchema,
+  },
+};
