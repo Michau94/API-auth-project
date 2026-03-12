@@ -90,8 +90,14 @@ export async function deleteProject(projectId: string, userId: string) {
     throw err;
   }
 
-  await prisma.project.delete({
-    where: { id: projectId },
+  await prisma.$transaction(async (tx) => {
+    await tx.task.deleteMany({
+      where: { projectId },
+    });
+
+    await tx.project.delete({
+      where: { id: projectId },
+    });
   });
 }
 
